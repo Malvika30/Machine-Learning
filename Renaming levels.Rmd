@@ -1,0 +1,77 @@
+---
+title: "Renaming levels"
+author: "malvika mathur"
+date: "25 November 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(caret)
+
+```
+
+
+```{r}
+
+data("iris")
+summary(iris)
+head(iris,10)
+```
+
+#factor() function for nominal data
+
+using factor function to recode values of variable Species. 
+
+```{r}
+attach(iris)
+iris$Species <- factor(iris$Species,
+levels = c("setosa","versicolor","virginica"),
+labels = c(1,2,3)) 
+levels(iris$Species)
+```
+
+
+#Recoding a continuous variable
+```{r}
+mean_val<-mean(Sepal.Width)
+mean_val
+iris$category[iris$Sepal.Width< mean_val] <- "low"
+iris$category[iris$Sepal.Width>=mean_val] <- "high"
+# Convert the column to a factor
+iris$category <- factor(iris$category)
+levels(iris$category)
+```
+
+#the ordered() function for ordinal data
+```{r}
+
+
+iris$category <- ordered(iris$category,
+levels = c("Low", "High"),
+labels =c(1,2)) 
+levels(iris$category)
+```
+
+using match()
+```{r}
+oldvalues <- c(1,2)
+newvalues <- factor(c("v1","v2"))  #converting to factor
+
+iris$category <- newvalues[ match(iris$category, oldvalues) ]
+levels(iris$category)
+```
+
+
+#Recoding a categorical variable
+The easiest way is to use revalue() or mapvalues() from the plyr package
+```{r}
+library(plyr)
+iris$Species <- revalue(iris$Species, c("setosa"="1", "versicolor"="2", "virginica"="3"))
+iris$Species <- mapvalues(iris$Species, from = c("setosa","versicolor","virginica"), to = c("1", "2","3"))
+levels(iris$Species)
+```
+
